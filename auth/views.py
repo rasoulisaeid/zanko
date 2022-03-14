@@ -127,6 +127,16 @@ class ValidateOTP(APIView):
                 'detail' : 'Either phone or otp was not recieved in Post request'
             })
 
+def auth_view(request):
+    phone = request.data.get('phone')
+    user = User.objects.filter(phone__iexact=phone)
+    if user.exists():
+        loginApi = LoginAPI()
+        loginApi.post(request)
+    else:
+        registerApi = Register()
+        registerApi.post(request)  
+         
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
