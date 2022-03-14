@@ -9,6 +9,7 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
+
     @action(methods=['GET'], detail=False)
     def newest(self, request):
         newest = self.get_queryset().order_by('created_date').last()

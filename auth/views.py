@@ -174,7 +174,6 @@ class LoginAPI(KnoxLoginView):
             elif user.first_login:
                 user.first_login = False
                 user.save() 
-                return Response({"status":False, "message":"otp_expired"}) 
             login(request, user)
             return super().post(request, format=None)
         else:
