@@ -15,12 +15,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         book = Book.objects.create(**validated_data)
-        return book
-
-    def delete(self, request, pk, format=None):
-        book = self.get_object(pk)
-        book.delete()
-        return Response(status=status.HTTP_200_OK) 
+        return book 
 
 
 
