@@ -53,7 +53,7 @@ class ValidatePhoneSendOTP(APIView):
                     send_otp_to_phone(phone, code)
                     return Response({
                             'status':True,
-                            'details': "otp sent."
+                            'details': code
                         }) 
                 else:
                     otp_model = PhoneOTP.objects.create(
@@ -64,7 +64,7 @@ class ValidatePhoneSendOTP(APIView):
                         send_otp_to_phone(phone, code)
                         return Response({
                             'status':True,
-                            'details': "otp sent."
+                            'details': code
                         })  
                     else:
                         return Response({
