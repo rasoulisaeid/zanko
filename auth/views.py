@@ -1,3 +1,4 @@
+from crypt import methods
 import requests
 from django.shortcuts import render
 from rest_framework.views import APIView
@@ -127,7 +128,10 @@ class ValidateOTP(APIView):
                 'detail' : 'Either phone or otp was not recieved in Post request'
             })
 
+
+@api_view(methods=['POST'])
 def auth_view(request):
+    permission_classes = (permissions.AllowAny,)
     phone = request.data.get('phone')
     user = User.objects.filter(phone__iexact=phone)
     if user.exists():
@@ -136,7 +140,7 @@ def auth_view(request):
     else:
         registerApi = Register()
         registerApi.post(request)  
-         
+
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
