@@ -23,6 +23,7 @@ def generate_otp(phone):
         return random.randint(9999,99999)
     else:
         return False    
+        
 API_KEY = "686B724A38367657522B496D65555744692B6851526B2F433334554253544552"
 
 def send_otp_to_phone(phone, code):
@@ -47,18 +48,12 @@ class ValidatePhoneSendOTP(APIView):
                 old = PhoneOTP.objects.filter(phone__iexact = phone)
                 if old.exists():
                     old = old.first()
-                    count = old.count
-                    if count > 10:
-                            return Response({
-                                'status':False,
-                                'details': "otp limit has been reached."
-                        }) 
-                    old.count = count + 1
+                    old.otp = code
                     old.save()
                     send_otp_to_phone(phone, code)
                     return Response({
                             'status':True,
-                            'details': "Otp sent."
+                            'details': "otp sent."
                         }) 
                 else:
                     otp_model = PhoneOTP.objects.create(
@@ -69,7 +64,7 @@ class ValidatePhoneSendOTP(APIView):
                         send_otp_to_phone(phone, code)
                         return Response({
                             'status':True,
-                            'details': code
+                            'details': "otp sent."
                         })  
                     else:
                         return Response({
