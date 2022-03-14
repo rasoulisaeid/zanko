@@ -21,3 +21,10 @@ class BookViewSet(viewsets.ModelViewSet):
         book = self.get_object()
         book.delete()
         return Response(data=[{'status': status.HTTP_200_OK, "message":'deleted'}]) 
+
+    def put(self, request, *args, **kwargs):
+        book = self.get_object()
+        book.name = request.data.get('name')
+        book.description = request.data.get('description')
+        book.save()
+        return book
