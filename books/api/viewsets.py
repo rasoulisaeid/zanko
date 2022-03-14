@@ -16,4 +16,4 @@ class BookViewSet(viewsets.ModelViewSet):
         my_books = user.book_set.order_by('id')
         serializer = BookSerializer(my_books, many=True)
         return Response(serializer.data)
-
+    

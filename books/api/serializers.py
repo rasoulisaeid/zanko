@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.response import Response
 from books.models import Book
 from auth.models import User
@@ -16,6 +16,11 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         validated_data['user'] = self.context['request'].user
         book = Book.objects.create(**validated_data)
         return book
+
+    def delete(self, request, pk, format=None):
+        book = self.get_object(pk)
+        book.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
 
 
