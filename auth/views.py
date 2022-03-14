@@ -164,10 +164,6 @@ class LoginAPI(KnoxLoginView):
         phone = request.data.get('phone')
         result, message = check_otp(phone, otp)
         if result:
-            old = PhoneOTP.objects.filter(phone__iexact = phone)
-            old = old.first()
-            old.count = old.count + 1
-            old.save()
             serializer = LoginUserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             user = serializer.validated_data['user']
@@ -178,8 +174,6 @@ class LoginAPI(KnoxLoginView):
             elif user.first_login:
                 user.first_login = False
                 user.save() 
-            if(old.count > 5):
-                old.delete()
                 return Response({"status":False, "message":"otp_expired"}) 
             login(request, user)
             return super().post(request, format=None)
