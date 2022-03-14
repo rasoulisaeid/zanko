@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ob4(%5uvqf9swtqijrn68xm=+h^eg39k)*vpo@3p1%-yuy#2!a'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['zankoapp.herokuapp.com', '127.0.0.1']

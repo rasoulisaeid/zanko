@@ -1,4 +1,3 @@
-from crypt import methods
 import requests
 from django.shortcuts import render
 from rest_framework.views import APIView
@@ -18,6 +17,7 @@ import random
 
 
 app_name = "auth"
+
 def generate_otp(phone):
     if phone:
         return random.randint(9999,99999)
@@ -41,47 +41,46 @@ class ValidatePhoneSendOTP(APIView):
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get('phone')
         if phone_number:
-                phone = str(phone_number)
-                code = generate_otp(phone)
-                if code:
-                    old = PhoneOTP.objects.filter(phone__iexact = phone)
-                    if old.exists():
-                        old = old.first()
-                        count = old.count
-                        if count > 10:
-                              return Response({
-                                    'status':False,
-                                    'details': "otp limit has been reached."
-                            }) 
-                        old.count = count + 1
-                        old.save()
+            phone = str(phone_number)
+            code = generate_otp(phone)
+            if code:
+                old = PhoneOTP.objects.filter(phone__iexact = phone)
+                if old.exists():
+                    old = old.first()
+                    count = old.count
+                    if count > 10:
+                            return Response({
+                                'status':False,
+                                'details': "otp limit has been reached."
+                        }) 
+                    old.count = count + 1
+                    old.save()
+                    send_otp_to_phone(phone, code)
+                    return Response({
+                            'status':True,
+                            'details': "Otp sent."
+                        }) 
+                else:
+                    otp_model = PhoneOTP.objects.create(
+                        phone = phone,
+                        otp = code,
+                    )  
+                    if otp_model:
                         send_otp_to_phone(phone, code)
                         return Response({
-                                'status':True,
-                                'details': "Otp sent."
-                            }) 
-                    else:
-                        otp_model = PhoneOTP.objects.create(
-                            phone = phone,
-                            otp = code,
-                        )  
-                        if otp_model:
-                            send_otp_to_phone(phone, code)
-                            return Response({
-                                'status':True,
-                                'details': code
-                            })  
-                        else:
-                            return Response({
-                            'status':False,
-                            'details': 'Sending otp error'
+                            'status':True,
+                            'details': code
                         })  
-        
-                else:
-                    return Response({
+                    else:
+                        return Response({
                         'status':False,
                         'details': 'Sending otp error'
-                    })    
+                    })  
+            else:
+                return Response({
+                    'status':False,
+                    'details': 'Sending otp error'
+                })    
         else:
             return Response({
                 'status':False,
@@ -105,11 +104,11 @@ class ValidateOTP(APIView):
                     old.logged = True
                     old.validated = True
                     old.save()
-
-                    return Response({
-                        'status' : True, 
-                        'user_exists' : user.exists()
-                    })
+                    if create_user(phone):
+                        return Response({'status' : True})
+                    else:
+                        return Response({'status' : False})
+                    
                 else:
                     return Response({
                         'status' : False, 
@@ -128,45 +127,76 @@ class ValidateOTP(APIView):
                 'detail' : 'Either phone or otp was not recieved in Post request'
             })
 
-
-@api_view(methods=['POST'])
-def auth_view(request):
-    permission_classes = (permissions.AllowAny,)
-    phone = request.data.get('phone')
-    user = User.objects.filter(phone__iexact=phone)
-    if user.exists():
-        loginApi = LoginAPI()
-        loginApi.post(request)
+def create_user(phone):
+    password = phone[:4] + "@Aran" + phone[4:] + "@Noha"
+    user_data = {'phone': phone, 'password': password }
+    serializer = CreateUserSerializer(data=user_data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return True
     else:
-        registerApi = Register()
-        registerApi.post(request)  
+        return False    
+
+
+def check_otp(phone, otp_sent):
+    if phone and otp_sent:
+            old = PhoneOTP.objects.filter(phone__iexact = phone)
+            if old.exists():
+                old = old.first()
+                otp = old.otp
+                if str(otp) == str(otp_sent):
+                    old.logged = True
+                    old.validated = True
+                    old.save()
+                    user = User.objects.filter(phone__iexact = phone)
+                    if user.exists():
+                        return True, "user_exists"
+                    else:
+                        if create_user(phone):
+                            return True, "user_created"
+                        else:
+                            return False, "user_not_created"    
+                else:
+                    return False, "otp_incorrect"
+            else:
+                return False, "phone_not_recognized"
+
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
-
     def post(self, request, format=None):
-        serializer = LoginUserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        if user.last_login is None :
-            user.first_login = True
-            user.save()
-            
-        elif user.first_login:
-            user.first_login = False
-            user.save()
-            
-        login(request, user)
-        return super().post(request, format=None)
+        otp = request.data.get('otp')
+        phone = request.data.get('phone')
+        result, message = check_otp(phone, otp)
+        if result:
+            old = PhoneOTP.objects.filter(phone__iexact = phone)
+            old = old.first()
+            old.count = old.count + 1
+            old.save()
+            serializer = LoginUserSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            if user.last_login is None :
+                user.first_login = True
+                user.save()
+                
+            elif user.first_login:
+                user.first_login = False
+                user.save() 
+            if(old.count > 5):
+                old.delete()
+                return Response({"status":False, "message":"otp_expired"}) 
+            login(request, user)
+            return super().post(request, format=None)
+        else:
+            return Response({'status':False, 'message': message})          
 
-class Register(APIView):
+class RegisterAPI(APIView):
     permission_classes = (AllowAny,)
     authentication_classes = [TokenAuthentication]
-
     def post(self, request, *args, **kwargs):
         phone = request.data.get('phone')
-        password = request.data.get('password')
-
+        password = phone[:4] + "@Aran" + phone[3:] + "@Noha"
         if phone and password:
             old = PhoneOTP.objects.filter(phone__iexact = phone)
             if old.exists():
@@ -179,12 +209,12 @@ class Register(APIView):
                     serializer = CreateUserSerializer(data=user_data)
                     if serializer.is_valid(raise_exception=True):
                         user = serializer.save()
-                        auth_user = authenticate(user=user,username=phone, password=password)
-                        if not auth_user:
-                            return Response({'error': 'Invalid Credentials'}, status=404)
-                        token, _ = Token.objects.get_or_create(user=user)
+                        
+                        user.first_login = True
+                        user.save() 
+                        login(request, user)
                         old.delete()
-                        return Response({'token': token.key}, status=200)  
+                        return super().post(request, format=None)
                     return Response(serializer.errors, status=400)  
                 else:
                     return Response({
@@ -201,3 +231,4 @@ class Register(APIView):
                     'status': False,
                     'details': "Phone and Password are required."
                 })
+

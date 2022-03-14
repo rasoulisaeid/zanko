@@ -1,11 +1,11 @@
 from django.urls import re_path
-from auth.views import ValidatePhoneSendOTP, ValidateOTP, Register, LoginAPI, auth_view
+from auth.views import ValidatePhoneSendOTP, ValidateOTP, RegisterAPI, LoginAPI
 
 
 urlpatterns = [
-    re_path(r'^validate_phone', ValidatePhoneSendOTP.as_view()),
-    re_path(r'^validate_otp', ValidateOTP.as_view()),
-    re_path(r'^register', Register.as_view()),
-    re_path(r'^login', auth_view),
+    re_path(r'^check-phone', ValidatePhoneSendOTP.as_view()),
+   # re_path(r'^validate_otp', ValidateOTP.as_view()),
+   # re_path(r'^register', RegisterAPI.as_view()),
+    re_path(r'^login', LoginAPI.as_view()),
 ]
 
