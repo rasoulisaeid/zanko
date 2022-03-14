@@ -11,8 +11,9 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
     @action(methods=['GET'], detail=False)
-    def newest(self, request):
-        newest = self.get_queryset().order_by('created_date').last()
-        serializer = self.get_serializer_class()(newest)
+    def index(self, request):
+        user = request.user
+        my_books = user.book_set.order_by('id')
+        serializer = BookSerializer(my_books, many=True)
         return Response(serializer.data)
 
