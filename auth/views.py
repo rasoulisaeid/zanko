@@ -40,14 +40,7 @@ class ValidatePhoneSendOTP(APIView):
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get('phone')
         if phone_number:
-            phone = str(phone_number)
-            user = User.objects.filter(phone__iexact=phone)
-            if user.exists():
-                return Response({
-                'status':False,
-                'details': 'phone number already exists.'
-            }) 
-            else:
+                phone = str(phone_number)
                 code = generate_otp(phone)
                 if code:
                     old = PhoneOTP.objects.filter(phone__iexact = phone)
@@ -82,7 +75,7 @@ class ValidatePhoneSendOTP(APIView):
                             'status':False,
                             'details': 'Sending otp error'
                         })  
-                          
+        
                 else:
                     return Response({
                         'status':False,
@@ -103,6 +96,7 @@ class ValidateOTP(APIView):
 
         if phone and otp_sent:
             old = PhoneOTP.objects.filter(phone__iexact = phone)
+            user = User.objects.filter(phone__iexact=phone)
             if old.exists():
                 old = old.first()
                 otp = old.otp
@@ -113,7 +107,7 @@ class ValidateOTP(APIView):
 
                     return Response({
                         'status' : True, 
-                        'detail' : 'OTP matched, kindly proceed to save password'
+                        'user_exists' : user.exists()
                     })
                 else:
                     return Response({
