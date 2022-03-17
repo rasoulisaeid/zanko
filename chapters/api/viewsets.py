@@ -1,5 +1,6 @@
 from chapters.models import Chapter
 from subjects.models import Subject
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from books.models import Book
 from zanko.permissions import JustOwner
@@ -10,7 +11,7 @@ from rest_framework.decorators import action
 
 
 class ChapterViewSet(viewsets.ModelViewSet):
-    permission_classes = [JustOwner]
+    permission_classes = [JustOwner, IsAuthenticated]
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
 
