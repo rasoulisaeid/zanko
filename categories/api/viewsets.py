@@ -1,8 +1,5 @@
-from books.models import Book
-from chapters.models import Chapter
-from .serializers import BookSerializer
 from categories.models import Category
-from chapters.api.serializers import ChapterSerializer
+from .serializers import CategorySerializer
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status
@@ -16,32 +13,29 @@ from auth.models import User
 #   def has_permission(self, request, object):
 #       return request.user == object.user()
 
-class BookViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,JustOwner]
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
     def perform_create(self, serializer):
-        category = Category.objects.get(id=self.request.data.get('category')) 
-        serializer.save(user=self.request.user, category=category)
+        serializer.save(user=self.request.user)
 
     def list(self, request):
-        category_id = request.query_params.get('category', None)
-        category = Category.objects.get(pk=category_id)
+        user = request.user
         # Each book has many chapters and we load them
         # my_books = user.book_set.prefetch_related('chapters').order_by('id')
-        books = category.books.order_by('id')
-        serializer = BookSerializer(books, many=True)
+        my_categories = user.category_set.order_by('id')
+        serializer = CategorySerializer(my_categories, many=True)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        book = self.get_object()
-        book.delete()
+        category = self.get_object()
+        category.delete()
         return Response(data=[{'status': status.HTTP_200_OK, "message":'deleted'}]) 
 
     def update(self, request, *args, **kwargs):
-        book = self.get_object()
-        book.name = request.data.get('name')
-        book.description = request.data.get('description')
-        book.save()
+        category = self.get_object()
+        category.name = request.data.get('name')
+        category.save()
         return Response({'status': status.HTTP_200_OK, "message":'updated'})
