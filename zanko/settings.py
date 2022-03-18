@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'categories.apps.CategoriesConfig',
     'books.apps.BooksConfig',
     'chapters.apps.ChaptersConfig',
-    'subjects.apps.SubjectsConfig',
     'points.apps.PointsConfig',
     'tags.apps.TagsConfig',
     'favorites.apps.FavoritesConfig',

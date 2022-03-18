@@ -15,8 +15,6 @@ class Chapter(models.Model):
     def __str__(self):
         return self.name
 
-    def get_book(self):
-        return self.book.name
         
             
 
