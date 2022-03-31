@@ -1,4 +1,3 @@
-from typing_extensions import Required
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from points.models import Point
@@ -11,8 +10,8 @@ class PointSerializer(serializers.HyperlinkedModelSerializer):
     type = serializers.CharField()
     title = serializers.CharField(style={'base_template': 'textarea.html'})
     text = serializers.CharField(style={'base_template': 'textarea.html'})
-    image = serializers.FileField(Required=False)
-    voice = serializers.FileField(Required=False)
+    image = serializers.FileField(required=False)
+    voice = serializers.FileField(required=False)
     # chapters = ChapterSerializer(many=True, read_only=True)
 
     class Meta:
