@@ -12,12 +12,11 @@ class PointSerializer(serializers.HyperlinkedModelSerializer):
     text = serializers.CharField(style={'base_template': 'textarea.html'})
     image = serializers.FileField()
     voice = serializers.FileField()
-    rtl = serializers.BooleanField(default=True)
     # chapters = ChapterSerializer(many=True, read_only=True)
 
     class Meta:
         model = Point
-        fields = ('id', 'user', 'chapter', 'type', 'title', 'text','image', 'voice','rtl')
+        fields = ('id', 'user', 'chapter', 'type', 'title', 'text','image', 'voice')
         
     
 

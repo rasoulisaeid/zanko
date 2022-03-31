@@ -8,11 +8,11 @@ from rest_framework.decorators import action
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.CharField()
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    books = BookSerializer(many=True, read_only=True)
+    # books = BookSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'user', 'books')
+        fields = ('id', 'name', 'user')
         
 
 

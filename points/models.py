@@ -10,7 +10,6 @@ class Point(models.Model):
     text = models.TextField(blank=True, null=True)
     image = models.FileField(blank=True, null=True, upload_to="images/%Y/%m/%d")
     voice = models.FileField(blank=True, null=True, upload_to="voices/%Y/%m/%d")
-    rtl = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
