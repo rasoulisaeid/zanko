@@ -1,5 +1,6 @@
 from chapters.models import Chapter
 from points.models import Point
+from bookmarks.models import Bookmark
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from zanko.permissions import JustOwner
@@ -26,6 +27,10 @@ class PointViewSet(viewsets.ModelViewSet):
         chapter = Chapter.objects.get(pk=chapter_id)
         # chapter = chapter.subject_set.prefetch_related('subjects').order_by('id')
         points = chapter.points.order_by('id')
+        for point in points:
+            bookmark = Bookmark.objects.filter(point=point, user=request.user).first()
+            if bookmark:
+                point.bookmark = True
         serializer = PointSerializer(points, many=True)
         return Response(serializer.data)
 
