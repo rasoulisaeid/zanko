@@ -1,10 +1,12 @@
 from django.db import models
 from points.models import Point
-from favorites.models import Favorite
+from categories.models import Category
+from auth.models import User
 
 class Bookmark(models.Model):
-    point = models.ForeignKey(Point, on_delete=models.CASCADE)
-    favorite = models.ForeignKey(Favorite, on_delete=models.CASCADE)
+    point = models.ForeignKey(Point, on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
