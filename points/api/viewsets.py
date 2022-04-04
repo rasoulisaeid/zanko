@@ -30,7 +30,7 @@ class PointViewSet(viewsets.ModelViewSet):
         for point in points:
             bookmark = Bookmark.objects.filter(point=point, user=request.user).first()
             if bookmark:
-                point.bookmark = True
+                point.bookmark = "yes_" + str(bookmark.id)
         serializer = PointSerializer(points, many=True)
         return Response(serializer.data)
 
