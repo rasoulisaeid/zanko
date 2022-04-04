@@ -12,7 +12,7 @@ class PointSerializer(serializers.HyperlinkedModelSerializer):
     text = serializers.CharField(style={'base_template': 'textarea.html'})
     image = serializers.FileField(required=False)
     voice = serializers.FileField(required=False)
-    bookmark = serializers.CharField(default="no_0")
+    bookmark = serializers.BooleanField(default=False)
     # chapters = ChapterSerializer(many=True, read_only=True)
 
     class Meta:

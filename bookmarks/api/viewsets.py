@@ -28,8 +28,14 @@ class BookmarkViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         point = Point.objects.get(id=self.request.data.get('point'))
-        category = find_category(point)
-        serializer.save(user=self.request.user, category=category, point=point)
+        user = self.request.user
+        bookmark = Bookmark.objects.filter(user=user, point=point).first()
+        if bookmark:
+            bookmark.delete()
+            return Response(data=[{'status': status.HTTP_200_OK, "message":'deleted'}])
+        else:
+            category = find_category(point)
+            serializer.save(user=self.request.user, category=category, point=point)
 
     def list(self, request):
         user = request.user
