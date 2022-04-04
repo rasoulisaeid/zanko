@@ -37,7 +37,17 @@ class PointViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         point = self.get_object()
-        point.explains = request.data.get('explains')
+        point.text = request.data.get('text')
+        point.title = request.data.get('title')
+        attachments = request.data.get('attachments')
+        image_old = attachments.split('_')[0]
+        voice_old = attachments.split('_')[1]
+        
+        if image_old != "yes":
+            point.image = request.data.get('image')
+        if voice_old != "yes":
+            point.voice = request.data.get('voice')
+        
         point.save()
         return Response({'status': status.HTTP_200_OK, "message":'updated'})
 
