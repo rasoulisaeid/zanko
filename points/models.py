@@ -1,6 +1,7 @@
 from django.db import models
 from chapters.models import Chapter
 from auth.models import User
+from tags.models import Tag
 
 class Point(models.Model):
     chapter = models.ForeignKey(Chapter, related_name="points", on_delete=models.CASCADE)
@@ -10,6 +11,7 @@ class Point(models.Model):
     text = models.TextField(blank=True, null=True)
     image = models.FileField(blank=True, null=True, upload_to="images/%Y/%m/%d")
     voice = models.FileField(blank=True, null=True, upload_to="voices/%Y/%m/%d")
+    tags = models.ManyToManyField(Tag, through="TagPoint")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -19,3 +21,6 @@ class Point(models.Model):
     def __str__(self):
         return self.user.phone + " | " + self.type
 
+class TagPoint(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tags')
+    point = models.ForeignKey(Point, on_delete=models.CASCADE, related_name='points')

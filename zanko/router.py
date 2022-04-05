@@ -3,6 +3,7 @@ from chapters.api.viewsets import ChapterViewSet
 from categories.api.viewsets import CategoryViewSet
 from points.api.viewsets import PointViewSet
 from bookmarks.api.viewsets import BookmarkViewSet
+from tags.api.viewsets import TagViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -16,3 +17,6 @@ router.register('points', PointViewSet)
 router.register('points/<int:pk>/', PointViewSet)
 router.register('bookmarks', BookmarkViewSet)
 router.register('bookmarks/<int:pk>/', BookmarkViewSet)
+router.register('tags', TagViewSet)
+router.register('tags/<int:pk>/', TagViewSet)
+router.register('tags/<int:pk>/points', TagViewSet)

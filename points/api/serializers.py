@@ -2,6 +2,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from points.models import Point
 from auth.models import User
+from tags.api.serializers import TagSerializer
 from rest_framework.decorators import action
 
 class PointSerializer(serializers.HyperlinkedModelSerializer):
@@ -13,11 +14,11 @@ class PointSerializer(serializers.HyperlinkedModelSerializer):
     image = serializers.FileField(required=False)
     voice = serializers.FileField(required=False)
     bookmark = serializers.BooleanField(default=False)
-    # chapters = ChapterSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Point
-        fields = ('id', 'user', 'chapter', 'type', 'title', 'text','image', 'voice', 'bookmark')
+        fields = ('id', 'user', 'chapter', 'type', 'title', 'text','image', 'voice', 'bookmark', 'tags')
         
     
 
