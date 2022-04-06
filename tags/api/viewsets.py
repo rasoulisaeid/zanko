@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from zanko.permissions import JustOwner
 from auth.models import User
+from points.models import Point, TagPoint
 from points.api.serializers import PointSerializer
 
 # class OwnerOnly(BasePermission):
@@ -41,8 +42,22 @@ class TagViewSet(viewsets.ModelViewSet):
         tag.save()
         return Response({'status': status.HTTP_200_OK, "message":'updated'})
 
+    @action(detail=True, methods=['POST'])
+    def set_tag(self, request, *args, **kwargs):
+        tag_name = request.data.get('name')
+        tag = Tag.objects.filter(name=tag_name, user=request.user).first()
+        # print(tag.name)
+        if not tag:
+            tag = Tag.objects.create(name=tag_name, user=request.user)
+        point = Point.objects.get(id=request.data.get('point'))
+        tag_point = TagPoint.objects.filter(tag=tag, point=point)
+        if not tag_point:
+            TagPoint.objects.create(tag=tag, point=point)
+        return Response({'status': status.HTTP_200_OK, "message":'created'})    
+
     @action(detail=True, methods=['GET'])
     def points(self, request, *args, **kwargs):
         points = self.get_object().point_set.all()
         serializer = PointSerializer(points, many=True)
         return Response(serializer.data)
+
