@@ -21,12 +21,13 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
-    def perform_create(self, serializer):
+    def create(self, request):
         tag = Tag.objects.filter(name=self.request.data.get('name'), user=self.request.user)
         if tag:
             return Response(data=[{'status': status.HTTP_200_OK, "message":'existed'}])
         else:
-            serializer.save(user=self.request.user)
+            Tag.objects.create(name=request.data.get('name'), user=request.user)
+            return Response(data=[{'status': status.HTTP_200_OK, "message":'created'}])
 
     def list(self, request):
         user = request.user
