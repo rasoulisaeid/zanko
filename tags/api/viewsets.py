@@ -1,3 +1,4 @@
+from unicodedata import name
 from tags.models import Tag
 from .serializers import TagSerializer
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -21,7 +22,11 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        tag = Tag.objects.filter(name=self.request.data.get('name'), user=self.request.user)
+        if tag:
+            return Response(data=[{'status': status.HTTP_200_OK, "message":'existed'}])
+        else:
+            serializer.save(user=self.request.user)
 
     def list(self, request):
         user = request.user
