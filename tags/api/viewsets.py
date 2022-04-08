@@ -44,9 +44,14 @@ class TagViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         tag = self.get_object()
-        tag.name = request.data.get('name')
-        tag.save()
-        return Response({'status': status.HTTP_200_OK, "message":'updated'})
+        prev_tag = Tag.objects.filter(name=self.request.data.get('name'), user=self.request.user)
+        if prev_tag:
+            return Response({'status': status.HTTP_200_OK, "message":'existed'})
+        else:
+            tag.name = request.data.get('name')
+            tag.save()
+            return Response({'status': status.HTTP_200_OK, "message":'updated'})     
+        
 
     @action(detail=True, methods=['POST'])
     def set_tag(self, request, *args, **kwargs):
