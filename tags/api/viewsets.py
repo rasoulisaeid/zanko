@@ -44,16 +44,14 @@ class TagViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['POST'])
     def set_tag(self, request, *args, **kwargs):
-        tag_name = request.data.get('name')
-        tag = Tag.objects.filter(name=tag_name, user=request.user).first()
-        # print(tag.name)
-        if not tag:
-            tag = Tag.objects.create(name=tag_name, user=request.user)
+        tag = self.get_object()
         point = Point.objects.get(id=request.data.get('point'))
         tag_point = TagPoint.objects.filter(tag=tag, point=point)
         if not tag_point:
             TagPoint.objects.create(tag=tag, point=point)
-        return Response({'status': status.HTTP_200_OK, "message":'created'})    
+        else:
+            tag_point.delete()    
+        return Response({'status': status.HTTP_200_OK, "message":'done'})    
 
     @action(detail=True, methods=['GET'])
     def points(self, request, *args, **kwargs):
