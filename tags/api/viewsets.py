@@ -44,7 +44,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         tag = self.get_object()
-        prev_tag = Tag.objects.filter(name=self.request.data.get('name'), user=self.request.user)
+        prev_tag = Tag.objects.filter(name=request.data.get('name'), user=request.user)
         if prev_tag:
             return Response({'status': status.HTTP_200_OK, "message":'existed'})
         else:
