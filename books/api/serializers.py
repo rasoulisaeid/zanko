@@ -9,12 +9,11 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.CharField()
     description = serializers.CharField(style={'base_template': 'textarea.html'})
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    category = serializers.PrimaryKeyRelatedField(read_only=True)
     # chapters = ChapterSerializer(many=True, read_only=True)
 
     class Meta:
         model = Book
-        fields = ('id', 'name', 'description', 'user', 'category')
+        fields = ('id', 'name', 'description', 'user')
         
 
 

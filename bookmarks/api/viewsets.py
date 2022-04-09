@@ -1,5 +1,4 @@
 from bookmarks.models import Bookmark
-from categories.models import Category
 from points.models import Point
 from .serializers import BookmarkSerializer
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -15,11 +14,9 @@ from auth.models import User
 #   def has_permission(self, request, object):
 #       return request.user == object.user()
 
-def find_category(point):
+def find_book(point):
     chapter = point.chapter
-    book = chapter.book
-    category = book.category
-    return category
+    return chapter.book
 
 class BookmarkViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,JustOwner]
@@ -34,8 +31,8 @@ class BookmarkViewSet(viewsets.ModelViewSet):
             bookmark.delete()
             return Response(data=[{'status': status.HTTP_200_OK, "message":'deleted'}])
         else:
-            category = find_category(point)
-            serializer.save(user=self.request.user, category=category, point=point)
+            book = find_book(point)
+            serializer.save(user=self.request.user, book=book, point=point)
 
     def list(self, request):
         user = request.user
