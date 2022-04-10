@@ -12,6 +12,7 @@ from rest_framework.decorators import action
 import jdatetime as time
 
 def study_order():
+    time.set_locale("fa_IR")
     date = time.datetime.now()
     order = str(date)
     order +=("+" + str(date + time.timedelta(days=3)))
