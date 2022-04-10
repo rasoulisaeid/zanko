@@ -1,5 +1,6 @@
 from chapters.models import Chapter
 from points.models import Point
+from studies.models import Study
 from bookmarks.models import Bookmark
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -8,7 +9,13 @@ from .serializers import PointSerializer
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+import jdatetime as time
 
+def study_order():
+    date = time.datetime.now()
+    order = str(date)
+    order +=("+" + str(date + time.timedelta(days=3)))
+    return order
 
 class PointViewSet(viewsets.ModelViewSet):
     permission_classes = [JustOwner, IsAuthenticated]
@@ -25,12 +32,22 @@ class PointViewSet(viewsets.ModelViewSet):
         # Note that we can't use request.data
         chapter_id = request.query_params.get('chapter', None)
         chapter = Chapter.objects.get(pk=chapter_id)
-        # chapter = chapter.subject_set.prefetch_related('subjects').order_by('id')
         points = chapter.points.order_by('id')
         for point in points:
+            # Add study
+            study = Study.objects.filter(point=point, user=request.user)
+            if study:
+                next_time = study[0].order.split("+")[-1]
+                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S.%f") < time.datetime.now()
+                point.study = study
+            else:
+                point.study = [Study.objects.create(user=request.user, point=point, order=study_order())]
+
+            # Add bookmark    
             bookmark = Bookmark.objects.filter(point=point, user=request.user).first()
             if bookmark:
                 point.bookmark = True
+                
         serializer = PointSerializer(points, many=True)
         return Response(serializer.data)
 

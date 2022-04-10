@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'chapters.apps.ChaptersConfig',
     'points.apps.PointsConfig',
     'tags.apps.TagsConfig',
+    'studies.apps.StudiesConfig',
     'bookmarks.apps.BookmarksConfig',
     'auth.apps.AuthConfig',
     'rest_framework',
