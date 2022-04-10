@@ -14,7 +14,7 @@ import jdatetime as time
 def study_order():
     date = time.datetime.now()
     order = str(date)
-    order +=("+" + str(date + time.timedelta(days=3)))
+    order +=("+" + str(date + time.timedelta(minutes=3)))
     return order
 
 class PointViewSet(viewsets.ModelViewSet):
