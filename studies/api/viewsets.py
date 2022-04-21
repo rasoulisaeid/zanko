@@ -41,7 +41,7 @@ def update_data(self, request):
         next_study = str(time.datetime.now() + time.timedelta(minutes=10))    
     elif level == 5:
         next_study = str(time.datetime.now() + time.timedelta(years=3))       
-    order = order + "+" + next_study
+    order = order[:-26] + str(time.datetime.now()) + "+" + next_study
     
     return order, level, function    
 
