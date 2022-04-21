@@ -27,8 +27,7 @@ def update_data(self, request):
     if state == "1":
         level += 1
     else:
-        if level > 1:
-            level -= 1
+        level = 1
 
     next_study = ""
     if level == 1:
