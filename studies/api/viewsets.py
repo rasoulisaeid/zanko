@@ -22,9 +22,9 @@ def update_data(self, request):
     order = study.order
     level = study.level
     function = study.function
-    remembers = request.data.get('remembers')
-    function += "_" + remembers
-    if remembers == "1":
+    state = request.data.get('state')
+    function += "_" + state
+    if state == "1":
         level += 1
     else:
         if level > 1:
@@ -58,10 +58,10 @@ class StudyViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         study = self.get_object()
-        order, level, function  = update_data()
+        order, level, function  = update_data(self, request)
         study.order = order
         study.level = level
         study.function = function
         study.save()
-        return Response({'status': status.HTTP_200_OK, "order":order, "study":study, "level":level})
+        return Response({'status': status.HTTP_200_OK, "order":order,'function':function, "level":level})
 
