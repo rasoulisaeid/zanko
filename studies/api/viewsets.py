@@ -32,13 +32,13 @@ def update_data(self, request):
 
     next_study = ""
     if level == 1:
-        next_study = str(time.datetime.now() + time.timedelta(days=3))
+        next_study = str(time.datetime.now() + time.timedelta(minutes=1))
     elif level == 2:  
-        next_study = str(time.datetime.now() + time.timedelta(days=10))
+        next_study = str(time.datetime.now() + time.timedelta(minutes=3))
     elif level == 3:
-        next_study = str(time.datetime.now() + time.timedelta(days=20))   
+        next_study = str(time.datetime.now() + time.timedelta(minutes=5))   
     elif level == 4:
-        next_study = str(time.datetime.now() + time.timedelta(days=30))    
+        next_study = str(time.datetime.now() + time.timedelta(minutes=10))    
     elif level == 5:
         next_study = str(time.datetime.now() + time.timedelta(years=3))       
     order = order + "+" + next_study

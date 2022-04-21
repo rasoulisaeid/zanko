@@ -15,7 +15,7 @@ def study_order():
     time.set_locale("fa_IR")
     date = time.datetime.now()
     order = str(date)
-    order +=("+" + str(date + time.timedelta(days=3)))
+    order +=("+" + str(date + time.timedelta(minutes=1)))
     return order
 
 class PointViewSet(viewsets.ModelViewSet):
