@@ -41,7 +41,7 @@ class PointViewSet(viewsets.ModelViewSet):
             study = Study.objects.filter(point=point, user=request.user)
             if study:
                 next_time = study[0].order.split("+")[-1]
-                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now()
+                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now(pytz.timezone('Asia/Tehran'))
                 point.study = study
             else:
                 point.study = [Study.objects.create(user=request.user, point=point, order=study_order())]
