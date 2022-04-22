@@ -16,14 +16,13 @@ def study_order():
     time.set_locale("fa_IR")
     timezone = pytz.timezone('Asia/Tehran')
     date = time.datetime.now(timezone)
-    order = str(date)
+    order = str(date)[0:19]
     order +=("+" + str(date + time.timedelta(days=3)))
     return order
 
 def update_data(self, request):
     time.set_locale("fa_IR")
     timezone = pytz.timezone('Asia/Tehran')
-    time.set_timezone('Asia/Tehran')
     study = self.get_object()
     order = study.order
     level = study.level
@@ -37,16 +36,16 @@ def update_data(self, request):
 
     next_study = ""
     if level == 1:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=1))
+        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=1))[0:19]
     elif level == 2:  
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=3))
+        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=3))[0:19]
     elif level == 3:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=5))   
+        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=5))[0:19]   
     elif level == 4:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=10))    
+        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=10))[0:19]    
     elif level == 5:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(years=3))       
-    order = order[:-26] + str(time.datetime.now(timezone)) + "+" + next_study
+        next_study = str(time.datetime.now(timezone) + time.timedelta(hours=36))[0:19]      
+    order = order[:-19] + str(time.datetime.now(timezone))[0:19] + "+" + next_study
     
     return order, level, function    
 

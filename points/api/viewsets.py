@@ -16,8 +16,8 @@ def study_order():
     time.set_locale("fa_IR")
     timezone = pytz.timezone('Asia/Tehran')
     date = time.datetime.now(timezone)
-    order = str(date)
-    order +=("+" + str(date + time.timedelta(minutes=1)))
+    order = str(date)[0:19]
+    order += ("+" + str(date + time.timedelta(minutes=1))[0:19])
     return order
 
 class PointViewSet(viewsets.ModelViewSet):
@@ -41,7 +41,7 @@ class PointViewSet(viewsets.ModelViewSet):
             study = Study.objects.filter(point=point, user=request.user)
             if study:
                 next_time = study[0].order.split("+")[-1]
-                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S.%f") < time.datetime.now()
+                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now()
                 point.study = study
             else:
                 point.study = [Study.objects.create(user=request.user, point=point, order=study_order())]
