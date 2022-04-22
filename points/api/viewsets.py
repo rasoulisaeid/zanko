@@ -10,10 +10,12 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 import jdatetime as time
+import pytz
 
 def study_order():
     time.set_locale("fa_IR")
-    date = time.datetime.now()
+    timezone = pytz.timezone('Asia/Tehran')
+    date = time.datetime.now(timezone)
     order = str(date)
     order +=("+" + str(date + time.timedelta(minutes=1)))
     return order
