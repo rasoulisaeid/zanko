@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.CharField()
-    data = serializers.CharField()
+    data = serializers.CharField(read_only=True)
     description = serializers.CharField(style={'base_template': 'textarea.html'})
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     # chapters = ChapterSerializer(many=True, read_only=True)

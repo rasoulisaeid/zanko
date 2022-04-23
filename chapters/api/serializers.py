@@ -7,7 +7,7 @@ from books.models import Book
 class ChapterSerializer(serializers.HyperlinkedModelSerializer):
     # points = PointSerializer(many=True, read_only=True)
     name = serializers.CharField()
-    data = serializers.CharField()
+    data = serializers.CharField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     book = serializers.PrimaryKeyRelatedField(read_only=True)
 
