@@ -7,11 +7,12 @@ from books.models import Book
 class ChapterSerializer(serializers.HyperlinkedModelSerializer):
     # points = PointSerializer(many=True, read_only=True)
     name = serializers.CharField()
+    data = serializers.CharField()
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     book = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Chapter
-        fields = ('id', 'name', 'book', 'user')
+        fields = ('id', 'name', 'book', 'user', 'data')
    
     
