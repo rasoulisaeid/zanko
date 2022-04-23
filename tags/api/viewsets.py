@@ -10,7 +10,19 @@ from rest_framework.decorators import api_view
 from zanko.permissions import JustOwner
 from auth.models import User
 from points.models import Point, TagPoint
+from studies.models import Study
+from bookmarks.models import Bookmark
 from points.api.serializers import PointSerializer
+import jdatetime as time
+import pytz
+
+def study_order():
+    time.set_locale("fa_IR")
+    timezone = pytz.timezone('Asia/Tehran')
+    date = time.datetime.now(timezone)
+    order = str(date)[0:19]
+    order += ("+" + str(date + time.timedelta(minutes=1))[0:19])
+    return order
 
 # class OwnerOnly(BasePermission):
 #   def has_permission(self, request, object):
@@ -67,6 +79,20 @@ class TagViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['GET'])
     def points(self, request, *args, **kwargs):
         points = self.get_object().point_set.all()
+        for point in points:
+            # Add study
+            study = Study.objects.filter(point=point, user=request.user)
+            if study:
+                next_time = study[0].order.split("+")[-1]
+                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now(pytz.timezone('Asia/Tehran'))
+                point.study = study
+            else:
+                point.study = [Study.objects.create(user=request.user, point=point, order=study_order())]
+
+            # Add bookmark    
+            bookmark = Bookmark.objects.filter(point=point, user=request.user).first()
+            if bookmark:
+                point.bookmark = True
         serializer = PointSerializer(points, many=True)
         return Response(serializer.data)
 
