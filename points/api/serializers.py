@@ -16,7 +16,7 @@ class PointSerializer(serializers.HyperlinkedModelSerializer):
     bookmark = serializers.BooleanField(default=False)
     tags = TagSerializer(many=True, read_only=True)
     study = StudySerializer(many=True, read_only=True)
-    info = serializers.CharField()
+    info = serializers.CharField(read_only=True)
 
     class Meta:
         model = Point
