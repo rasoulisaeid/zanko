@@ -8,7 +8,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from zanko.permissions import JustOwner
+from studies.models import Study
 from auth.models import User
+from points.api.serializers import PointSerializer
+import jdatetime as time
+import pytz
 
 # class OwnerOnly(BasePermission):
 #   def has_permission(self, request, object):
@@ -34,14 +38,38 @@ class BookmarkViewSet(viewsets.ModelViewSet):
             book = find_book(point)
             serializer.save(user=self.request.user, book=book, point=point)
 
-    def list(self, request):
-        user = request.user
-        my_bookmarks = user.bookmark_set.order_by('id')
-        serializer = BookmarkSerializer(my_bookmarks, many=True)
-        return Response(serializer.data)
+    
 
     def destroy(self, request, *args, **kwargs):
         bookmark = self.get_object()
         bookmark.delete()
         return Response(data=[{'status': status.HTTP_200_OK, "message":'deleted'}]) 
+
+
+    def list(self, request, *args, **kwargs):
+        points = Point.objects.all()
+        bookmark_id_list = []
+        for point in list(points):
+            chapter = point.chapter
+            book = chapter.book
+            point.info = chapter.name + "_" + book.name
+            bookmark = Bookmark.objects.filter(point=point, user=request.user)
+            print("user-phone: " + str(request.user.phone) + "\n" + "point-id: " + str(point.id))
+            if bookmark:
+                point.bookmark = True
+                # Add study
+                study = Study.objects.filter(point=point, user=request.user)
+                next_time = study[0].order.split("+")[-1]
+                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now(pytz.timezone('Asia/Tehran'))
+                point.study = study 
+                print("yes")
+                bookmark_id_list.append(point)
+                     
+            # Add bookmark    
+        # bookmark_points = Point.objects.filter(id__in=bookmark_id_list)    
+        serializer = PointSerializer(bookmark_id_list, many=True)
+        return Response(serializer.data)
+   
+
+    
 

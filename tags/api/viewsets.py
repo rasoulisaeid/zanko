@@ -80,6 +80,9 @@ class TagViewSet(viewsets.ModelViewSet):
     def points(self, request, *args, **kwargs):
         points = self.get_object().point_set.all()
         for point in points:
+            chapter = point.chapter
+            book = chapter.book
+            point.info = chapter.name + "_" + book.name
             # Add study
             study = Study.objects.filter(point=point, user=request.user)
             if study:

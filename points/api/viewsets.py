@@ -35,8 +35,10 @@ class PointViewSet(viewsets.ModelViewSet):
         # Note that we can't use request.data
         chapter_id = request.query_params.get('chapter', None)
         chapter = Chapter.objects.get(pk=chapter_id)
+        book = chapter.book
         points = chapter.points.order_by('id')
         for point in points:
+            point.info = chapter.name + "_" + book.name
             # Add study
             study = Study.objects.filter(point=point, user=request.user)
             if study:
