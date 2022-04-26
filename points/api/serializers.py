@@ -20,7 +20,7 @@ class PointSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Point
-        fields = ('id', 'user', 'chapter', 'type', 'title', 'text','image', 'voice', 'bookmark', 'tags', 'study', 'info')
+        fields = ('id', 'user', 'chapter', 'type', 'title', 'text', 'image', 'voice', 'bookmark', 'tags', 'study', 'info')
 
          
     

@@ -54,15 +54,14 @@ class BookmarkViewSet(viewsets.ModelViewSet):
             book = chapter.book
             point.info = chapter.name + "_" + book.name
             bookmark = Bookmark.objects.filter(point=point, user=request.user)
-            print("user-phone: " + str(request.user.phone) + "\n" + "point-id: " + str(point.id))
             if bookmark:
                 point.bookmark = True
                 # Add study
                 study = Study.objects.filter(point=point, user=request.user)
-                next_time = study[0].order.split("+")[-1]
-                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now(pytz.timezone('Asia/Tehran'))
-                point.study = study 
-                print("yes")
+                if study:
+                    next_time = study[0].order.split("+")[-1]
+                    study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now(pytz.timezone('Asia/Tehran'))
+                    point.study = study
                 bookmark_id_list.append(point)
                      
             # Add bookmark    
