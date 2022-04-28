@@ -4,9 +4,13 @@ from points.api.viewsets import PointViewSet
 from bookmarks.api.viewsets import BookmarkViewSet
 from tags.api.viewsets import TagViewSet
 from studies.api.viewsets import StudyViewSet
+from auth.api.viewsets import UserViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
+router.register('users', UserViewSet)
+router.register('users/update_user', UserViewSet)
+router.register('users/user_info', UserViewSet)
 router.register('books', BookViewSet)
 router.register('books/<int:pk>/', BookViewSet)
 router.register('chapters', ChapterViewSet)
