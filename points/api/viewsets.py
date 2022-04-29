@@ -28,7 +28,12 @@ class PointViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         chapter = Chapter.objects.get(id=self.request.data.get('chapter'))
-        serializer.save(user=self.request.user, chapter=chapter)
+        user = self.request.user
+        if user.balance < 1:
+            return Response(data=[{'status': status.HTTP_402_PAYMENT_REQUIRED, "message":'no-balance'}])
+        else:
+            user.balance -= 1
+            serializer.save(user=user, chapter=chapter)
 
 
     def list(self, request):

@@ -46,6 +46,7 @@ class User(AbstractBaseUser):
     active = models.BooleanField(default=False, verbose_name="فعال است؟")
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
+    balance = models.IntegerField(default=10)
     first_login = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'phone'
