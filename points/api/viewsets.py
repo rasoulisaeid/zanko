@@ -33,6 +33,7 @@ class PointViewSet(viewsets.ModelViewSet):
             return Response(data=[{'status': status.HTTP_402_PAYMENT_REQUIRED, "message":'no-balance'}])
         else:
             user.balance -= 1
+            user.save()
             serializer.save(user=user, chapter=chapter)
 
 
