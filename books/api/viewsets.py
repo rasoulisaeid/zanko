@@ -68,7 +68,7 @@ class BookViewSet(viewsets.ModelViewSet):
         for book in books:
             book.data = book_data(request, book)
         serializer = BookSerializer(books, many=True)
-        return Response(serializer.data)
+        return Response({'books':serializer.data, 'balance':user.balance})
 
     def destroy(self, request, *args, **kwargs):
         book = self.get_object()
