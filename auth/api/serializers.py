@@ -7,7 +7,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     introduction = serializers.CharField()
     class Meta:
         model = User
-        fields = ('id', 'name', 'phone', 'introduction')
+        fields = ('id', 'name','balance', 'phone', 'introduction')
         
 
 
