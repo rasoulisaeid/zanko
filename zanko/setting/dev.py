@@ -5,7 +5,7 @@ SECRET_KEY = 'django-insecure-ob4(%5uvqf9swtqijrn68xm=+h^eg39k)*vpo@3p1%-yuy#2!a
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['zankoapp.herokuapp.com','newzanko.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['zankoapp.herokuapp.com','newzanko.herokuapp.com', 'https://www.drsehid.ir']
 
 #INSTALLED_APPS = []
 
