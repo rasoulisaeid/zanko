@@ -13,7 +13,7 @@ import pytz
 
 def chapter_data(request, chapter):
     points = chapter.points.order_by('id')
-    level_1, level_2, level_3, level_4, ready = 0, 0, 0, 0, 0
+    level_1, level_2, level_3, level_4, level_5, ready = 0, 0, 0, 0, 0, 0
     for point in points:
         study = Study.objects.filter(point=point, user=request.user)
         if study:
@@ -29,8 +29,10 @@ def chapter_data(request, chapter):
             elif level == 3:
                 level_3 += 1
             elif level == 4:
-                level_4 += 1 
-    chapter_data = str(level_1) + str(level_2) + str(level_3) + str(level_4) + str(ready)           
+                level_4 += 1
+            elif level == 5:
+                level_5 += 1      
+    chapter_data = str(level_1) + "_" + str(level_2) + "_" + str(level_3) + "_" + str(level_4) + "_" + str(level_5) + "_" + str(ready)           
     return chapter_data
 
 class ChapterViewSet(viewsets.ModelViewSet):

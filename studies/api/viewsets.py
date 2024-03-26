@@ -30,21 +30,26 @@ def update_data(self, request):
     state = request.data.get('state')
     function += "_" + state
     if state == "1":
-        level += 1
+        if study.level != 5:
+            level += 1
     else:
         level = 1
 
     next_study = ""
     if level == 1:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=1))[0:19]
+        next_study = str(time.datetime.now(timezone) + time.timedelta(days=1))[0:19]
     elif level == 2:  
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=3))[0:19]
+        next_study = str(time.datetime.now(timezone) + time.timedelta(days=5))[0:19]
     elif level == 3:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=5))[0:19]   
+        next_study = str(time.datetime.now(timezone) + time.timedelta(days=10))[0:19]   
     elif level == 4:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(minutes=10))[0:19]    
+        next_study = str(time.datetime.now(timezone) + time.timedelta(days=21))[0:19]     
     elif level == 5:
-        next_study = str(time.datetime.now(timezone) + time.timedelta(hours=36))[0:19]      
+        if study.level == 4:
+            next_study = str(time.datetime.now(timezone) + time.timedelta(days=45))[0:19]   
+        elif study.level == 5:
+            next_study = str(time.datetime.now(timezone) + time.timedelta(days=90))[0:19]      
+             
     order = order[:-19] + str(time.datetime.now(timezone))[0:19] + "+" + next_study
     
     return order, level, function    

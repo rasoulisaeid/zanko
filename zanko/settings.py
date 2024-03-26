@@ -19,14 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ob4(%5uvqf9swtqijrn68xm=+h^eg39k)*vpo@3p1%-yuy#2!a'
-
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['zankoapp.herokuapp.com','newzanko.herokuapp.com', '127.0.0.1']
-
 
 # Application definition
 
@@ -41,6 +33,7 @@ INSTALLED_APPS = [
     'chapters.apps.ChaptersConfig',
     'points.apps.PointsConfig',
     'tags.apps.TagsConfig',
+    'purchases.apps.PurchasesConfig',
     'studies.apps.StudiesConfig',
     'bookmarks.apps.BookmarksConfig',
     'auth.apps.AuthConfig',
@@ -91,16 +84,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 REST_KNOX = {
     'USER_SERIALIZER': 'auth.serializers.UserSerializer',
-    'TOKEN_TTL': timedelta(hours=24*7)
-}
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'TOKEN_TTL': timedelta(hours=24*1000)
 }
 
 
@@ -141,12 +125,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-STATIC_ROOT = BASE_DIR / "static"
-MEDIA_ROOT = BASE_DIR / "media"
 
-STATICFILES_DIRS = [
-    BASE_DIR / "statics"
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

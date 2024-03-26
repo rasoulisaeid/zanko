@@ -132,7 +132,6 @@ def create_user(phone):
     else:
         return False    
 
-
 def check_otp(phone, otp_sent):
     if phone and otp_sent:
             old = PhoneOTP.objects.filter(phone__iexact = phone)
@@ -156,7 +155,6 @@ def check_otp(phone, otp_sent):
             else:
                 return False, "phone_not_recognized"
 
-
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request, format=None):
@@ -174,10 +172,13 @@ class LoginAPI(KnoxLoginView):
             elif user.first_login:
                 user.first_login = False
                 user.save() 
+            old_otp = PhoneOTP.objects.filter(phone__iexact = phone)   
+            old_otp.delete() 
             login(request, user)
             return super().post(request, format=None)
         else:
             return Response({'status':False, 'message': message})          
+
 
 class RegisterAPI(APIView):
     permission_classes = (AllowAny,)

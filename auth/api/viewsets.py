@@ -19,6 +19,14 @@ def find_book(point):
     chapter = point.chapter
     return chapter.book
 
+def balance_points(code):
+    if code == "buy_points_200":
+        return 200
+    elif code == "buy_points_100":
+        return 100
+    else:
+        return 50        
+
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,JustOwner]
     queryset = User.objects.all()
@@ -27,8 +35,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         user = request.user
-        user.name = request.data.get('name')
-        user.introduction = request.data.get('info')
+        if request.data.get('pay') == "yes":
+            user.balance += balance_points(request.data.get('balance'))
+        else:
+            user.name = request.data.get('name')
+            user.introduction = request.data.get('info')
         user.save()
         return Response({'status': status.HTTP_200_OK, "update":'yes'})
 
