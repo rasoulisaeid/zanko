@@ -3,7 +3,7 @@ from zanko.settings import *
 SECRET_KEY = 'django-insecure-ob4(%5uvqf9swtqijrn68xm=+h^eg39k)*vpo@3p1%-yuy#2!a'
 
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -25,6 +25,6 @@ DATABASES = {
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static"
-# ]
+STATICFILES_DIRS = [
+    BASE_DIR / "statics"
+]
