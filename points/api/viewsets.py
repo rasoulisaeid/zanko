@@ -19,6 +19,7 @@ import codecs
 from books.models import Book
 from tags.models import Tag
 
+
 def save_point(point, user, chapter):
     text = point['subject']
     text = text.replace('*', '©')
@@ -58,10 +59,12 @@ def save_book(book, user):
     saved_book = Book.objects.create(name=name, description=description, category=category, user=user)
     return saved_book
 
+
 def save_chapter(chapter, book, user):
     name = chapter['name']
     saved_chapter = Chapter.objects.create(name=name, book=book, user=user)
     return saved_chapter
+
 
 def read_csv(file):
     words_dict = dict()
@@ -69,7 +72,8 @@ def read_csv(file):
     for row in words[1:]:
         words_dict[row[3]] = words_dict.setdefault(row[3], []) + [(row[0], row[1])]     
     return words_dict  
-    
+
+
 def read_csv_(file):
     words_list = list()
     words = list(csv.reader(codecs.iterdecode(file, 'utf-8')))
@@ -77,11 +81,13 @@ def read_csv_(file):
             words_list.append((row[0], row[1]))
     return words_list     
 
+
 def study_order():
     date = time.datetime.now()
     order = str(date)[0:19]
     order += ("+" + str(date + time.timedelta(days=1))[0:19])
     return order
+
 
 def filter_list(filter, point, f_list):
     if filter == "all":
@@ -111,7 +117,6 @@ class PointViewSet(viewsets.ModelViewSet):
     queryset = Point.objects.all()
     serializer_class = PointSerializer
 
-
     def perform_create(self, serializer):
         cond = False
         if cond:
@@ -120,7 +125,7 @@ class PointViewSet(viewsets.ModelViewSet):
             for book in book_req.json()['data']:
                 if book['id'] != 1:
                     continue
-                #saved_book = save_book(book, user)
+                # saved_book = save_book(book, user)
                 saved_book = Book.objects.get(id=28)
                 chapter_req = requests.get("https://residenti.ofoghekonkoor.ir/api/v1/" + str(book['id']) + '/chapters')
                 for chapter in chapter_req.json()['data'][25:27]:  
