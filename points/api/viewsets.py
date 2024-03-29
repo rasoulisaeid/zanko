@@ -9,7 +9,7 @@ from .serializers import PointSerializer
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-import jdatetime as time
+import datetime as time
 import pytz
 import requests
 from django.core.files.base import ContentFile
@@ -38,6 +38,7 @@ def save_point(point, user, chapter):
         saved_point.voice.save(point['audioUrl'].split("/")[-1], ContentFile(voice.content)) 
     return saved_point       
 
+
 def set_tags(tags, point, user):
     for tag in tags:
         check_tag = Tag.objects.filter(name=tag['name'], user=user)
@@ -48,7 +49,8 @@ def set_tags(tags, point, user):
         else:
             new_tag = Tag.objects.create(name=tag['name'], user=user) 
             TagPoint.objects.create(point=point, tag=new_tag)  
-                 
+
+
 def save_book(book, user):
     name = book['name']
     description = ''
@@ -76,9 +78,7 @@ def read_csv_(file):
     return words_list     
 
 def study_order():
-    time.set_locale("fa_IR")
-    timezone = pytz.timezone('Asia/Tehran')
-    date = time.datetime.now(timezone)
+    date = time.datetime.now()
     order = str(date)[0:19]
     order += ("+" + str(date + time.timedelta(days=1))[0:19])
     return order
@@ -104,8 +104,6 @@ def filter_list(filter, point, f_list):
     elif filter == "five":
         if point.level == "5":
             f_list.append(point)                                       
-
-    
 
 
 class PointViewSet(viewsets.ModelViewSet):
@@ -169,7 +167,7 @@ class PointViewSet(viewsets.ModelViewSet):
             study = Study.objects.filter(point=point, user=request.user)
             if study:
                 next_time = study[0].order.split("+")[-1]
-                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now(pytz.timezone('Asia/Tehran'))
+                study[0].ready = time.datetime.strptime(next_time, "%Y-%m-%d %H:%M:%S") < time.datetime.now()
                 point.study = study
             else:
                 point.study = [Study.objects.create(user=request.user, point=point, order=study_order())]
